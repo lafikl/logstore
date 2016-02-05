@@ -16,6 +16,13 @@ type LogStore struct {
 	fdParts  []*os.File
 }
 
+// Message is a representation of what gets stored on disk
+type Message struct {
+	Checksum  uint32
+	Payload   []byte
+	Partition int
+}
+
 // New returns a new LogStore instance
 func New(dataDir string, partitions int) *LogStore {
 	l := &LogStore{dataDir, partitions, []*os.File{}}
