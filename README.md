@@ -1,2 +1,2 @@
 # logstore
-An immutable append-only with partitioning storage engine for logs.
+A partitioned & immutable append-only storage engine, meant for logs.
