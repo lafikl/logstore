@@ -27,7 +27,7 @@ type LogStore struct {
 
 // Partition bla bla
 type Partition struct {
-	*sync.Mutex
+	*sync.RWMutex
 	Fd  *os.File
 	Idx int
 }
@@ -47,7 +47,7 @@ func New(dataDir string, partitions int) *LogStore {
 }
 
 func (l *LogStore) newPartition(idx int, fd *os.File) *Partition {
-	return &Partition{&sync.Mutex{}, fd, idx}
+	return &Partition{&sync.RWMutex{}, fd, idx}
 }
 
 // Setup makes sure that all the files are in place
@@ -134,8 +134,8 @@ func (l *LogStore) Read(partition int, offset int64, buf []byte) (n int, err err
 		return 0, ErrNoPartition
 	}
 	prtn := l.Partitions[partition]
-	prtn.Lock()
-	defer prtn.Unlock()
+	prtn.RLock()
+	defer prtn.RUnlock()
 	prtn.Fd.Seek(offset, 0)
 	rdr := bufio.NewReader(prtn.Fd)
 	n, err = rdr.Read(buf)
